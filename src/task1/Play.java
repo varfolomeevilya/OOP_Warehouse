@@ -11,17 +11,19 @@ public class Play {
     public Play() {
         this.gamers = new HashSet<>();
     }
+    public HashSet getGamers() {
+        return gamers;
+    }
 
-    public void simulatorRating(Gamer gamer, int quantityGame) {
-        for (int i = 0; i < quantityGame; i++) {
-            simulator(gamer);
+    //добавляет игрока
+    public String addGamer(Gamer gamer) {
+        if (this.gamers.add(gamer)){
+            return gamer.getName() + " -успешно добавлен";
         }
+        return gamer.getName() + " -этот ник занят!";
     }
 
-    public boolean addGamer(Gamer gamer) {           //добавление геймера в общий список
-        return this.gamers.add(gamer);
-    }
-
+    //выводит список игр из общей таблицы
     public HashSet<String> showGames() {
         HashSet<String> listGames = new HashSet<>();
         Iterator<Gamer> iterator = this.gamers.iterator();
@@ -32,25 +34,55 @@ public class Play {
                 listGames.add(strsGames[i]);
             }
         }
-
         return listGames;
     }
 
-    private void simulator(Gamer gamer) {    //рандомит выбор игр и сколько раз сыгранны и добавляет +1 к рейтингу игроку
-        int cnt = (int) (Math.random() * gamer.getGames().size());
-        Object[] keyS = gamer.getGames().keySet().toArray();
-        for (int i = 0; i < cnt; i++) {
-            Object key = keyS[(int) (Math.random() * keyS.length)];
-            gamer.upRating((String) key, true);
+    //рейтинг игрока по имени и игре
+    public String ratingByNameAndGame(String nameGamer, String nameGame){
+        ArrayList<Gamer> g = new ArrayList<>(this.gamers);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < g.size(); i ++){
+            if(g.get(i).getName().equals(nameGamer)){
+                if(g.get(i).equalsNameGame(nameGame)){
+                    stringBuilder.append(g.get(i).getName());
+                    stringBuilder.append(" ");
+                    stringBuilder.append(g.get(i).returnGameAndRating(nameGame));
+                }
+            }
         }
+        return stringBuilder.toString();
     }
+
+    //вывод игрока по игре
+    public Gamer gamerFromGame(String nameGame) {
+        Gamer tmp = null;
+        ArrayList<Gamer> g = new ArrayList<>(this.gamers);
+        for (int i = 0; i < g.size(); i++) {
+            if (g.get(i).equalsNameGame(nameGame)) {
+                tmp = g.get(i);
+            }
+        }
+        return tmp;
+    }
+
+//            //компаратор для сортировки
+//    public Gamer mySorted(Comparator comparator){
+//        Gamer res = new Gamer();
+//        ArrayList<Gamer> g = new ArrayList<>(this.gamers);
+//        for (int i = 0; i < g.size(); i++){
+//            if(comparator.compare(res.getRatingGame(), g.get(i).getRatingGame()) > 0){
+//                res = g.get(i);
+//            }
+//        }
+//        return res;
+//    }
 
     @Override
     public String toString() {
         return "Play{" +
                 "\ngamers=" + gamers +
-                '}';
+                "}";
     }
-    
+
 }
 
